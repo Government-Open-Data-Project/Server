@@ -1,10 +1,10 @@
 services:
-  mysql:
-    image: 'mysql:latest'
-    environment:
-      - 'MYSQL_DATABASE=mydatabase'
-      - 'MYSQL_PASSWORD=secret'
-      - 'MYSQL_ROOT_PASSWORD=verysecret'
-      - 'MYSQL_USER=myuser'
+  h2:
+    image: 'oscarfonts/h2'
     ports:
-      - '3306'
+      - '8082:8082'
+      - '9092:9092'
+    volumes:
+      - ./data:/opt/h2-data
+    environment:
+      - H2_OPTIONS='-ifNotExists -web -webAllowOthers -webPort 8082 -tcp -tcpAllowOthers -tcpPort 9092'
