@@ -16,6 +16,7 @@ public class SecurityConfig {
         http
                 .csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizeRequests ->
+                        //gpt는 인증 필요
                         authorizeRequests.anyRequest().permitAll() //모든 링크의 요청 승인(개발 동안만)
                 )
                 .httpBasic(Customizer.withDefaults())
