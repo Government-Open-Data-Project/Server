@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class ArticleController
 {
+
     @GetMapping("/article")
     public String getArticle(){
         System.out.println("article 요청");
