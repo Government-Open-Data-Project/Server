@@ -2,38 +2,38 @@ package com.springboot.government_data_project.controller;
 
 import com.springboot.government_data_project.dto.NewsResponseDTO;
 import com.springboot.government_data_project.service.NewsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.StringReader;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.http.HttpStatus;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api")
-public class NewsController
-{
+public class NewsController {
     private final NewsService newsService;
+    private final WebClient webClient;
 
-    public NewsController(NewsService newsService){
+    public NewsController(NewsService newsService, WebClient.Builder webClientBuilder) {
         this.newsService = newsService;
+        this.webClient = webClientBuilder.baseUrl("https://open.assembly.go.kr/portal").build();
     }
+
     @GetMapping("/news")
-    public NewsResponseDTO getArticle(@RequestParam("date") String date){
-        //date 형식이 날짜 형식인지 확인
-
-        NewsResponseDTO newsResponseDTO = newsService.getNews(date);
-        System.out.println(newsResponseDTO);
-
-        try {
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return newsResponseDTO;
+    public NewsResponseDTO getNews(@RequestParam String date) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/openapi/nzdppcljavkxnylqs")
+                        .queryParam("Type", "json")
+                        .queryParam("REG_DATE", date)
+                        .build())
+                .header("Content-Type", "application/json")
+                .accept(org.springframework.http.MediaType.APPLICATION_JSON)
+                .retrieve()
+                .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(),
+                        response -> response.bodyToMono(String.class)
+                                .flatMap(errorBody -> Mono.error(new RuntimeException("API request failed with error response: " + errorBody))))
+                .bodyToMono(NewsResponseDTO.class)
+                .block();
     }
 }
