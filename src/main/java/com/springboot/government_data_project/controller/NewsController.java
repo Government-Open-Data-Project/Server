@@ -1,21 +1,12 @@
 package com.springboot.government_data_project.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.springboot.government_data_project.dto.NewsListDTO;
-import com.springboot.government_data_project.dto.NewsResponseDTO;
+import com.springboot.government_data_project.dto.news.NewsListDTO;
+import com.springboot.government_data_project.dto.news.NewsResponseDTO;
 import com.springboot.government_data_project.service.NewsService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.springframework.web.bind.annotation.*;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.StringReader;
 
 @RestController
 @RequestMapping("/api")
