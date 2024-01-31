@@ -1,6 +1,7 @@
 package com.springboot.government_data_project.controller;
 
 import com.springboot.government_data_project.dto.law.LawResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequestMapping("/api/law")
 public class LawController {
 
+    @Operation(summary = "법안 정책 가져오는 기능")
     @GetMapping
     public ResponseEntity<List<LawResponse>> getLawData(){
         List<LawResponse> laws = new ArrayList<>();
