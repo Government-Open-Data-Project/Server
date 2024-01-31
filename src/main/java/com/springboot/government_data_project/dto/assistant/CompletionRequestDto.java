@@ -1,4 +1,4 @@
-package com.springboot.government_data_project.dto;
+package com.springboot.government_data_project.dto.assistant;
 
 import lombok.Builder;
 import lombok.Getter;

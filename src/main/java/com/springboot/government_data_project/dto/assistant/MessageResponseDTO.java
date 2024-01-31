@@ -1,4 +1,4 @@
-package com.springboot.government_data_project.dto;
+package com.springboot.government_data_project.dto.assistant;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

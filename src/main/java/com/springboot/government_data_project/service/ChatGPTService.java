@@ -1,7 +1,7 @@
 package com.springboot.government_data_project.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.springboot.government_data_project.dto.*;
+import com.springboot.government_data_project.dto.assistant.*;
 import com.sun.tools.javac.Main;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
