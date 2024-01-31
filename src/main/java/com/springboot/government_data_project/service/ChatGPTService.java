@@ -87,7 +87,7 @@ public class ChatGPTService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return response.body();
     }
-  
+
     public AssistantResponseDTO createAssistant(String initialPrompt) throws Exception {
         String url = "https://api.openai.com/v1/assistants";
         AssistantRequestDTO dto = new AssistantRequestDTO("gpt-4", initialPrompt);
