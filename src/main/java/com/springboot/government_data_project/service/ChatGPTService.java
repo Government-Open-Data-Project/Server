@@ -87,14 +87,14 @@ public class ChatGPTService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return response.body();
     }
-
+  
     public AssistantResponseDTO createAssistant(String initialPrompt) throws Exception {
         String url = "https://api.openai.com/v1/assistants";
         AssistantRequestDTO dto = new AssistantRequestDTO("gpt-4", initialPrompt);
         String response = post(url, dto);
         return objectMapper.readValue(response, AssistantResponseDTO.class);
     }
-   
+
     public ThreadResponseDTO createThread() throws Exception {
         String url = "https://api.openai.com/v1/threads";
 
