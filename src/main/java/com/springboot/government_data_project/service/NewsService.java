@@ -1,12 +1,13 @@
 package com.springboot.government_data_project.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.net.HttpHeaders;
-import com.springboot.government_data_project.dto.NewsResponseDTO;
+import com.springboot.government_data_project.dto.news.NewsResponseDTO;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -32,36 +33,32 @@ public class NewsService {
         return formattedDate;
     }
 
-    public NewsResponseDTO getNews(){
-        return webClient.get().uri(
-                uriBuilder -> uriBuilder
-                        .path("/nzdppcljavkxnylqs")
-                        .queryParam("Type" , responseType)
-                        .queryParam("REG_DATE" , getCurrentDate())
-                        .build())
-                .accept(MediaType.APPLICATION_JSON) // Accept 헤더 설정
-                .acceptCharset(Charset.forName("UTF-8"))
-                .retrieve()
-                .bodyToMono(NewsResponseDTO.class)
-                .block();
-    }
 
-        public NewsResponseDTO getNews(String date){
+        public NewsResponseDTO getNews(String date) throws JsonProcessingException {
     //        LocalDate regDate = LocalDate.of(year, month, day);
     //        String formattedRegDate = regDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-
-            return webClient.get().uri(
+             String jsonString = webClient.get().uri(
                             uriBuilder -> uriBuilder
-                                    .path("/nzdppcljavkxnylqs")
+                                    .path("/nbzyjjyoamdqqjorw")
                                     .queryParam("Type", responseType)
                                     .queryParam("REG_DATE" ,date)
+                                    .queryParam("pIndex", 1)
+                                    .queryParam("pSize", 5)
                                     .build())
                     .accept(MediaType.APPLICATION_JSON) // Accept 헤더 설정
                     .retrieve()
-                    .bodyToMono(NewsResponseDTO.class)
+                    .bodyToMono(String.class)
                     .block();
 
+            System.out.println(jsonString);
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            NewsResponseDTO newsResponseDTO = objectMapper.readValue(jsonString, NewsResponseDTO.class);
+
+            return newsResponseDTO;
 
         }
+
+
 }
