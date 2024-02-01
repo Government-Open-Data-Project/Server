@@ -53,7 +53,6 @@ public class NewsService {
 
             System.out.println(jsonString);
             ObjectMapper objectMapper = new ObjectMapper();
-
             NewsResponseDTO newsResponseDTO = objectMapper.readValue(jsonString, NewsResponseDTO.class);
 
             return newsResponseDTO;

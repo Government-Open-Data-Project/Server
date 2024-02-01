@@ -19,6 +19,4 @@ public class ChatGPTController {
         chatGPTService.run();
         return ResponseEntity.ok().body("Good");
     }
-
-
 }
