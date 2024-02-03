@@ -9,9 +9,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: ["main"]
+    branches: ["master"]
 
 permissions:
   contents: read
@@ -24,6 +24,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - run: mkdir -p ./src/main/resources/
+      - run: touch ./src/main/resources/application.properties
+      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
+      - run: cat ./src/main/resources/application.properties
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -33,7 +37,6 @@ jobs:
 
       - name: Grant Execute Permission For Gradlew & Build gradle
         run: |
-          cd ./government_data_project
           chmod +x gradlew
           ./gradlew build -x test
           
@@ -45,7 +48,6 @@ jobs:
           
       - name: Docker image build
         run: |
-          cd ./government_data_project
           docker build -t ${{secrets.DOCKERHUB_ID}}/government-project-server .
       
       - name: Docker Hub push
@@ -61,6 +63,6 @@ jobs:
             sudo docker login -u ${{ secrets.DOCKERHUB_ID }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
             sudo docker pull ${{ secrets.DOCKERHUB_ID }}/government-project-server
             sudo docker rm -f $(docker ps -qa) 2>/dev/null || true
-            cd /home/koreaj83/government_project/server
+            cd /home/acadove7/government_project/server
             sudo docker-compose up -d
             sudo docker image prune -f     

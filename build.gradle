@@ -53,6 +53,9 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.9.0'
 
+    // jsoup 의존성 추가 (크롤링)
+    implementation 'org.jsoup:jsoup:1.13.1'
+
 }
 
 dependencyManagement {

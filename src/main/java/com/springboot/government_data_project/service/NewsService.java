@@ -31,6 +31,7 @@ public class NewsService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDate = currentDate.format(formatter);
         return formattedDate;
+
     }
 
 

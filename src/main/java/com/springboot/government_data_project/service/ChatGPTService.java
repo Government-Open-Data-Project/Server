@@ -1,7 +1,7 @@
 package com.springboot.government_data_project.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.springboot.government_data_project.dto.*;
+import com.springboot.government_data_project.dto.assistant.*;
 import com.sun.tools.javac.Main;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +23,8 @@ public class ChatGPTService {
     private String apiKey;
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
+    final String assistant_id = "asst_M8PbBHybjonvFhIlWjuhHdaO";
+    final String thread_id = "thread_TceYRhep06JKefFM5pZr2hRw";
 
     public ChatGPTService() {
         this.httpClient = HttpClient.newHttpClient();
@@ -36,6 +38,9 @@ public class ChatGPTService {
 
     public void run() {
 
+        final String assistant_id = "asst_M8PbBHybjonvFhIlWjuhHdaO";
+        final String thread_id = "thread_TceYRhep06JKefFM5pZr2hRw";
+
         //LOAD YOUR API KEY
         Properties properties = new Properties();
 
@@ -44,18 +49,22 @@ public class ChatGPTService {
                 System.out.println("Sorry, unable to find application.properties");
                 return;
             }
+
             properties.load(input);
 
             ChatGPTService client = new ChatGPTService(apiKey);
-            AssistantResponseDTO assistantResponse = client.createAssistant("You are an expert in geography, be helpful and concise.");
-            ThreadResponseDTO threadResponse = client.createThread();
-            MessageResponseDTO messageResponse = client.sendMessage(threadResponse.id(), "user", "What is the capital of Italy?");
-            log.info("messegeResponse: " + messageResponse.content().toString());
+            //AssistantResponseDTO assistantResponse = client.createAssistant("You are an expert in geography, be helpful and concise.");
 
-            client.runMessage(threadResponse.id(), assistantResponse.id());
+            // ThreadResponseDTO threadResponse = client.createThread();
+            log.info("thread id : " + thread_id);
+
+            MessageResponseDTO messageResponse = client.sendMessage(thread_id, "user", "What is the capital of Italy?");
+
+            client.runMessage(thread_id, assistant_id);
             //Retrieve and handle responses
-            MessagesListResponseDTO response = client.getMessages(threadResponse.id());
-            log.info("response: " + response.toString());
+            MessagesListResponseDTO response = client.getMessages(thread_id);
+            response.printAllMessagesText();
+
 
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -101,6 +110,18 @@ public class ChatGPTService {
         return objectMapper.readValue(response, MessageResponseDTO.class);
     }
 
+    public MessageResponseDTO sendMessageTest(String role, String content) throws Exception {
+        final String assistant_id = "asst_M8PbBHybjonvFhIlWjuhHdaO";
+        final String thread_id = "thread_TceYRhep06JKefFM5pZr2hRw";
+        ChatGPTService client = new ChatGPTService(apiKey);
+
+        MessageResponseDTO messageResponse = client.sendMessage(thread_id, "user", content);
+        client.runMessage(thread_id, assistant_id);
+
+        return messageResponse;
+    }
+
+
     public RunResponseDTO runMessage(String threadId, String assistantId) throws Exception {
         String url = "https://api.openai.com/v1/threads/" + threadId + "/runs";
         RunRequestDTO dto = new RunRequestDTO(assistantId);
@@ -121,7 +142,25 @@ public class ChatGPTService {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        log.info("message list response = " + response.toString());
+
+        return objectMapper.readValue(response.body(), MessagesListResponseDTO.class);
+        // Assuming the response is a JSON array of MessageResponseDTO
+        //return objectMapper.readValue(response.body(), new TypeReference<List<MessageResponseDTO>>() {});
+    }
+
+    // 테스트용 함수 ( 로그인 기능 갖춰지면 삭제 )
+    public MessagesListResponseDTO getMessagesTest() throws Exception {
+        String url = "https://api.openai.com/v1/threads/" + thread_id + "/messages";
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Authorization", "Bearer " + apiKey)
+                .header("OpenAI-Beta", "assistants=v1")
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         return objectMapper.readValue(response.body(), MessagesListResponseDTO.class);
         // Assuming the response is a JSON array of MessageResponseDTO
