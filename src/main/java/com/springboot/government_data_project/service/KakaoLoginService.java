@@ -75,28 +75,4 @@ public class KakaoLoginService {
 
     }
 
-    @Transactional
-    public User saveUser(String access_token) {
-        KakaoProfile profile = findProfile(access_token); //사용자 정보 받아오기
-        User user = userRepository.findByUserid(profile.getId());
-
-        //처음이용자 강제 회원가입
-        if(user ==null) {
-            user = User.builder()
-                    .userid(profile.getId())
-                    .password(null) //필요없으니 일단 아무거도 안넣음. 원하는데로 넣으면 됌
-                    .nickname(profile.getKakao_account().getProfile().getNickname())
-                    .profileImg(profile.getKakao_account().getProfile().getProfile_image_url())
-                    .email(profile.getKakao_account().getEmail())
-                    .roles("USER")
-                    .createTime(LocalDateTime.now())
-                    .provider("Kakao")
-                    .build();
-
-            userRepository.save(user);
-        }
-
-        return user;
-    }
-
 }
