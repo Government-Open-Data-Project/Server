@@ -1,6 +1,7 @@
 package com.springboot.government_data_project.controller;
 
-import com.springboot.government_data_project.dto.UserProfileDTO;
+import com.springboot.government_data_project.dto.userProfile.UserProfileDTO;
+import com.springboot.government_data_project.dto.userProfile.UserProfileUpdateDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +33,9 @@ public class UserController {
 
     @Operation(summary = "프로필 정보를 등록 또는 업데이트 하는 함수 / 테스트 단계입니다 ")
     @PostMapping("/profile")
-    public ResponseEntity<UserProfileDTO> createAndSaveUserProfile(@RequestBody UserProfileDTO userProfileDTO) {
+    public ResponseEntity<UserProfileUpdateDTO> createAndSaveUserProfile(@RequestBody UserProfileUpdateDTO userProfileUpdateDTO) {
         // userService 계층으로 정보 보내는 함수 추가 필요
         // 프론트 구현을 위해 만들어 둔 함수
-        return ResponseEntity.status(HttpStatus.CREATED).body(userProfileDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userProfileUpdateDTO);
     }
 }
