@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+
 @RestController
 @RequestMapping("api/user")
 public class UserController {
@@ -22,7 +24,7 @@ public class UserController {
                 .isMarried(false)
                 .region("경북")
                 .position("학생")
-                .interest("IT")
+                .interests(Arrays.asList("IT", "공학"))
                 .build();
 
         return ResponseEntity.ok(userProfileDTO);
