@@ -18,8 +18,9 @@ public class LawService {
 
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
+
     @Value("${government.key}")
-    private String governmentApiKey;
+    private String governmentApiKey; // application.properties에서 API 키를 주입받습니다.
 
     public LawService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -31,32 +32,28 @@ public class LawService {
 
         // 정확한 요청 파라미터 구성
         String queryParams = String.format(
-                "KEY=%s&Type=json&pIndex=%d&pSize=%d",
-                governmentApiKey, // API 키를 직접 사용
+                "?KEY=%s&Type=json&pIndex=%d&pSize=%d",
+                governmentApiKey, // API 키 변수 사용
                 1, // pIndex 값
-                3 // pSize 값
+                3 // pSize 값 수정
         );
 
-        String urlWithParams = url + "?" + queryParams;
+        String urlWithParams = url + queryParams;
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(urlWithParams))
                 .header("Content-Type", "application/json")
-                .GET() 
+                .GET()
                 .build();
 
         try {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            log.info(response.body());
-            // 응답 바디를 WrapperResponseDTO 객체로 변환하여 반환
+           // 응답 바디를 WrapperResponseDTO 객체로 변환하여 반환
             return objectMapper.readValue(response.body(), WrapperResponseDTO.class);
         } catch (IOException | InterruptedException e) {
-            log.error("HTTP request failed", e);
+            System.err.println("HTTP request failed: " + e.getMessage());
             Thread.currentThread().interrupt(); // InterruptedException 발생 시 스레드 중단 처리
             return null;
         }
-}
-
-
-
+    }
 }

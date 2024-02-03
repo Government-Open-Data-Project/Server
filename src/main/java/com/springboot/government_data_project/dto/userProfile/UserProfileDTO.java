@@ -13,8 +13,8 @@ import java.util.List;
 @Builder
 public class UserProfileDTO {
     private String name; // 이름
-    private int age; // 나이
-    private boolean isMarried; // 결혼여부
+    private String age; // 나이
+    private String isMarried; // 결혼여부
     private String region; // 거주지역
     private String position; // 직위
     private List<String> interests; // 관심분야 (복수 가능)

@@ -11,8 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class UserProfileUpdateDTO {
-    private int age; // 나이
-    private boolean isMarried; // 결혼여부
+    private String age; // 나이
+    private String isMarried; // 결혼여부
     private String region; // 거주지역
     private String position; // 직위
     private List<String> interests; // 관심분야

@@ -21,8 +21,8 @@ public class UserController {
     public ResponseEntity<UserProfileDTO> getUserProfile() {
         UserProfileDTO userProfileDTO = UserProfileDTO.builder()
                 .name("김민재")
-                .age(25)
-                .isMarried(false)
+                .age("20대")
+                .isMarried("미혼")
                 .region("경북")
                 .position("학생")
                 .interests(Arrays.asList("IT", "공학"))
