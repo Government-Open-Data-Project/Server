@@ -69,18 +69,23 @@ public class LawController {
 
     public String crawlLawContent(String url) {
         try {
-            // Jsoup을 사용하여 URL의 HTML을 가져옵니다.
             Document doc = Jsoup.connect(url).get();
-
-            // "제안이유 및 주요내용"이 포함된 HTML 요소를 선택하는 적절한 셀렉터를 사용합니다.
-            // 이 셀렉터는 실제 웹 페이지의 구조에 따라 달라질 수 있습니다.
-            // 아래는 예시이며, 실제 웹 페이지 구조에 맞게 수정해야 합니다.
-            Element contentElement = doc.selectFirst("선택자");
+            Element contentElement = doc.selectFirst("#summaryContentDiv");
 
             if (contentElement != null) {
-                logger.info("crawed Date = " + contentElement.text());
-                // 내용을 문자열로 추출합니다.
-                return contentElement.text();
+                // HTML 내용을 추출
+                String htmlContent = contentElement.html();
+                // <br> 태그를 시스템의 줄바꿈 문자로 변환
+                String textContent = htmlContent.replace("<br>", "\n").replace("<br/>", "\n");
+                // HTML에서 순수 텍스트를 추출
+                String cleanText = Jsoup.parseBodyFragment(textContent).text();
+
+                // "제안이유 및 주요내용" 다음에 줄바꿈을 두 번 추가
+                cleanText = cleanText.replace("제안이유 및 주요내용", "제안이유 및 주요내용\n\n");
+
+                // 크롤링된 데이터 로깅
+                System.out.println("Crawled Data: " + cleanText);
+                return cleanText;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -88,4 +93,6 @@ public class LawController {
         }
         return "Content not found";
     }
+
+
 }
