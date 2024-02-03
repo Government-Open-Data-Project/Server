@@ -42,7 +42,7 @@ public class LawService {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(urlWithParams))
                 .header("Content-Type", "application/json")
-                .GET()
+                .GET() 
                 .build();
 
         try {
