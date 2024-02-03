@@ -15,5 +15,4 @@ public class RowDTO {
 
     @JsonProperty("LINK_URL")
     private String linkUrl;
-
 }

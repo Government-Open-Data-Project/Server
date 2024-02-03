@@ -1,7 +1,7 @@
 package com.springboot.government_data_project.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.springboot.government_data_project.dto.*;
+import com.springboot.government_data_project.dto.assistant.*;
 import com.sun.tools.javac.Main;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -93,7 +93,7 @@ public class ChatGPTService {
         AssistantRequestDTO dto = new AssistantRequestDTO("gpt-4", initialPrompt);
         String response = post(url, dto);
         return objectMapper.readValue(response, AssistantResponseDTO.class);
-    } 
+    }
 
     public ThreadResponseDTO createThread() throws Exception {
         String url = "https://api.openai.com/v1/threads";

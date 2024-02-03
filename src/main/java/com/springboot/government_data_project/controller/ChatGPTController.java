@@ -1,12 +1,10 @@
 package com.springboot.government_data_project.controller;
 
-import com.springboot.government_data_project.dto.MessageResponseDTO;
-import com.springboot.government_data_project.dto.MessagesListResponseDTO;
+import com.springboot.government_data_project.dto.assistant.MessagesListResponseDTO;
 import com.springboot.government_data_project.service.ChatGPTService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
