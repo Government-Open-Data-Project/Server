@@ -2,6 +2,7 @@ package com.springboot.government_data_project.controller;
 
 import com.springboot.government_data_project.dto.law.LawListResponseDTO;
 import com.springboot.government_data_project.dto.law.LawResponseDTO;
+import com.springboot.government_data_project.dto.law.SearchCriteria;
 import com.springboot.government_data_project.dto.law.WrapperResponseDTO;
 import com.springboot.government_data_project.service.LawService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,15 +51,22 @@ public class LawController {
         return ResponseEntity.ok(laws);
     }
 
+    @Operation(summary = "법안 검색하는 기능")
+    @GetMapping("/search")
+    public ResponseEntity<List<LawResponseDTO>> searchLaws(SearchCriteria criteria) {
+        List<LawResponseDTO> laws = lawService.searchLaws(criteria);
+        return ResponseEntity.ok(laws);
+    }
+
     @Operation(summary = "법안 정책 가져오는 기능")
     @GetMapping
     public ResponseEntity<List<LawResponseDTO>> getLawData(){
-
-
         List<LawResponseDTO> laws = new ArrayList<>();
-        laws.add(new LawResponseDTO("환경정책기본법", "환경정책기본법은 환경보전협회를 한국환경보전원으로 변경하여 공공기관으로서의 공공성과 책임성을 강화합니다. 하수도법 개정은 공공하수도에 대한 기술진단의 공정성을 강화하고, 환경교육의 활성화 및 지원에 관한 법률은 초등·중학교에서 학교환경교육 실시를 의무화합니다"));
+        laws.add(new LawResponseDTO("환경정책기본법", "환경정책기본법은 환경보전협회를 한국환경보전원으로 변경하여 공공기관으로서의 공공성과 책임성을 강화합니다. 하수도법 개정은 공공하수도에 대한 기술진단의 공정성을 강화하고, 환경교육의 활성화 및 지원에 관한 법률은 초등·중학교에서 학교환경교육 실시를 의무화합니다", "http://testUrl"));
         return ResponseEntity.status(HttpStatus.OK).body(laws);
     }
+
+
     public String crawlLawContent(String url) {
         try {
             // Jsoup을 사용하여 URL의 HTML을 가져옵니다.
