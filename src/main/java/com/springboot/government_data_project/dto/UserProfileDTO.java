@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,5 +17,5 @@ public class UserProfileDTO {
     private boolean isMarried; // 결혼여부
     private String region; // 거주지역
     private String position; // 직위
-    private String interest; // 관심분야
+    private List<String> interests; // 관심분야 (복수 가능)
 }
