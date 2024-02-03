@@ -73,14 +73,14 @@ public class LawController {
             Element contentElement = doc.selectFirst("#summaryContentDiv");
 
             if (contentElement != null) {
-                // HTML 내용을 추출합니다.
+                // HTML 내용을 추출
                 String htmlContent = contentElement.html();
-                // <br> 태그를 시스템의 줄바꿈 문자로 변환합니다.
+                // <br> 태그를 시스템의 줄바꿈 문자로 변환
                 String textContent = htmlContent.replace("<br>", "\n").replace("<br/>", "\n");
-                // Jsoup.parseBodyFragment()를 사용하여 HTML에서 순수 텍스트를 추출합니다.
+                // HTML에서 순수 텍스트를 추출
                 String cleanText = Jsoup.parseBodyFragment(textContent).text();
 
-                // "제안이유 및 주요내용" 다음에 줄바꿈을 두 번 추가합니다.
+                // "제안이유 및 주요내용" 다음에 줄바꿈을 두 번 추가
                 cleanText = cleanText.replace("제안이유 및 주요내용", "제안이유 및 주요내용\n\n");
 
                 // 크롤링된 데이터 로깅
