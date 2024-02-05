@@ -67,12 +67,12 @@ public class LawController {
     }
 
 
-    public String crawlLawContent(String url) {
+    public String crawlLawContent(String url) { 
         try {
             Document doc = Jsoup.connect(url).get();
             Element contentElement = doc.selectFirst("#summaryContentDiv");
 
-            if (contentElement != null) { 
+            if (contentElement != null) {
                 // HTML 내용을 추출
                 String htmlContent = contentElement.html();
                 // <br> 태그를 시스템의 줄바꿈 문자로 변환
