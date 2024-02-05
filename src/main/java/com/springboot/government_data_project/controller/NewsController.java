@@ -6,6 +6,8 @@ import com.springboot.government_data_project.dto.news.NewsResponseDTO;
 import com.springboot.government_data_project.service.NewsService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

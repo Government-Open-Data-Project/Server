@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.net.HttpHeaders;
 import com.springboot.government_data_project.dto.news.NewsResponseDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -13,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 
 
 @Service
+@Slf4j
 public class NewsService {
     private final WebClient webClient;
 
@@ -52,9 +54,10 @@ public class NewsService {
                     .bodyToMono(String.class)
                     .block();
 
-            System.out.println(jsonString);
             ObjectMapper objectMapper = new ObjectMapper();
             NewsResponseDTO newsResponseDTO = objectMapper.readValue(jsonString, NewsResponseDTO.class);
+
+            System.out.println("뉴스 가자오기 성공 : " + newsResponseDTO.getDataList().size());
 
             return newsResponseDTO;
 
