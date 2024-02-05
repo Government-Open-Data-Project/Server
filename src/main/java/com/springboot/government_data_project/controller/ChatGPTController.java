@@ -15,6 +15,7 @@ public class ChatGPTController {
     private final ChatGPTService chatGPTService;
     @GetMapping()
     public ResponseEntity<String> test(){
+        chatGPTService.run();
         return ResponseEntity.ok().body("Good");
     }
 
