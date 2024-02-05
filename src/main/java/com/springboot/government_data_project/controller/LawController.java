@@ -67,8 +67,8 @@ public class LawController {
     }
 
 
-    public String crawlLawContent(String url) {
-        try { 
+    public String crawlLawContent(String url) { 
+        try {
             Document doc = Jsoup.connect(url).get();
             Element contentElement = doc.selectFirst("#summaryContentDiv");
 
