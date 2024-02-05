@@ -24,7 +24,7 @@ public class ChatGPTService {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     final String assistant_id = "asst_M8PbBHybjonvFhIlWjuhHdaO";
-    final String thread_id = "thread_y78Eyl70gkcKhr2qLOTDU6DK";
+    final String thread_id = "thread_tfMlWHRdu2DvHtBbEKhbSNSX";
 
     public ChatGPTService() {
         this.httpClient = HttpClient.newHttpClient();
@@ -39,7 +39,7 @@ public class ChatGPTService {
     public void run() {
 
         final String assistant_id = "asst_M8PbBHybjonvFhIlWjuhHdaO";
-        final String thread_id = "thread_y78Eyl70gkcKhr2qLOTDU6DK";
+        final String thread_id = "thread_tfMlWHRdu2DvHtBbEKhbSNSX";
 
         //LOAD YOUR API KEY
         Properties properties = new Properties();
@@ -93,7 +93,7 @@ public class ChatGPTService {
         AssistantRequestDTO dto = new AssistantRequestDTO("gpt-3.5-turbo-0125", initialPrompt);
         String response = post(url, dto);
         return objectMapper.readValue(response, AssistantResponseDTO.class);
-    }
+    } 
 
     public ThreadResponseDTO createThread() throws Exception {
         String url = "https://api.openai.com/v1/threads";
