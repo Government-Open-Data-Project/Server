@@ -1,9 +1,6 @@
 package com.springboot.government_data_project.controller;
 
-import com.springboot.government_data_project.dto.law.LawListResponseDTO;
-import com.springboot.government_data_project.dto.law.LawResponseDTO;
-import com.springboot.government_data_project.dto.law.SearchCriteria;
-import com.springboot.government_data_project.dto.law.WrapperResponseDTO;
+import com.springboot.government_data_project.dto.law.*;
 import com.springboot.government_data_project.service.LawService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
@@ -84,6 +81,8 @@ public class LawController {
             // 크롤링 함수 crawlLawContent을 호출하여 법률 내용을 가져옵니다.
             String lawContent = crawlLawContent(law.getLinkUrl());
 
+
+
             // LawResponseDTO 객체를 빌더 패턴을 사용하여 생성합니다.
             LawResponseDTO dto = LawResponseDTO.builder()
                     .title(law.getTitle())
@@ -95,6 +94,30 @@ public class LawController {
             lawList.add(dto);
 
         });
+
+        return ResponseEntity.status(HttpStatus.OK).body(lawList);
+    }
+
+    @Operation(summary = "법안 정책 커뮤니티")
+    @GetMapping("/community")
+    public ResponseEntity<List<CommunityLawDataDTO>> getCommunityLawData(){
+        List<CommunityLawDataDTO> lawList = new ArrayList<>();
+
+        lawList.add(new CommunityLawDataDTO().builder()
+                .title("커뮤니티 법안 제목 1")
+                .content("커뮤니티 법안 내용 1")
+                .linkUrl("http://url")
+                .like(40)
+                .unLike(10)
+                .build());
+
+        lawList.add(new CommunityLawDataDTO().builder()
+                .title("커뮤니티 법안 제목 2")
+                .content("커뮤니티 법안 내용 2")
+                .linkUrl("http://url")
+                .like(132)
+                .unLike(27)
+                .build());
 
         return ResponseEntity.status(HttpStatus.OK).body(lawList);
     }
