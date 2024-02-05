@@ -39,7 +39,7 @@ public class ChatGPTService {
     public void run() {
 
         final String assistant_id = "asst_M8PbBHybjonvFhIlWjuhHdaO";
-        
+
         //LOAD YOUR API KEY
         Properties properties = new Properties();
 

@@ -36,19 +36,35 @@ public class LawController {
     @GetMapping("/test")
     public ResponseEntity<?> test() {
         WrapperResponseDTO wrapperResponseDTO = lawService.getLaw();
+        List<LawResponseDTO> lawList = new ArrayList<>();
 
         logger.info("wrapper length = " + wrapperResponseDTO.getTvbpmbill11().size());
         logger.info("tv length = " + wrapperResponseDTO.getTvbpmbill11().get(1).getRow().size());
         List<LawResponseDTO> laws = wrapperResponseDTO.getTvbpmbill11().get(1).getRow();
         laws.forEach(law -> {
+            // 크롤링 함수 crawlLawContent을 호출하여 법률 내용을 가져옵니다.
+            String lawContent = crawlLawContent(law.getLinkUrl());
+
+            // LawResponseDTO 객체를 빌더 패턴을 사용하여 생성합니다.
+            LawResponseDTO dto = LawResponseDTO.builder()
+                    .title(law.getTitle())
+                    .content(lawContent)
+                    .linkUrl(law.getLinkUrl())
+                    .build();
+
+            // 생성된 dto 객체를 lawList에 추가합니다.
+            lawList.add(dto);
+
+            // 로깅
             logger.info("Bill Title: {}, Link URL: {}", law.getTitle(), law.getLinkUrl());
         });
+
 
 
         crawlLawContent("https://likms.assembly.go.kr/bill/billDetail.do?billId=PRC_T2S4M0L1K1T7R1R0Z2X5E4D0C7B0J7");
 
 
-        return ResponseEntity.ok(laws);
+        return ResponseEntity.ok(lawList);
     }
 
     @Operation(summary = "법안 검색하는 기능")
@@ -61,13 +77,30 @@ public class LawController {
     @Operation(summary = "법안 정책 가져오는 기능")
     @GetMapping
     public ResponseEntity<List<LawResponseDTO>> getLawData(){
-        List<LawResponseDTO> laws = new ArrayList<>();
-        laws.add(new LawResponseDTO("환경정책기본법", "환경정책기본법은 환경보전협회를 한국환경보전원으로 변경하여 공공기관으로서의 공공성과 책임성을 강화합니다. 하수도법 개정은 공공하수도에 대한 기술진단의 공정성을 강화하고, 환경교육의 활성화 및 지원에 관한 법률은 초등·중학교에서 학교환경교육 실시를 의무화합니다", "http://testUrl"));
-        return ResponseEntity.status(HttpStatus.OK).body(laws);
+        WrapperResponseDTO wrapperResponseDTO = lawService.getLaw();
+        List<LawResponseDTO> lawList = new ArrayList<>();
+        List<LawResponseDTO> laws = wrapperResponseDTO.getTvbpmbill11().get(1).getRow();
+        laws.forEach(law -> {
+            // 크롤링 함수 crawlLawContent을 호출하여 법률 내용을 가져옵니다.
+            String lawContent = crawlLawContent(law.getLinkUrl());
+
+            // LawResponseDTO 객체를 빌더 패턴을 사용하여 생성합니다.
+            LawResponseDTO dto = LawResponseDTO.builder()
+                    .title(law.getTitle())
+                    .content(lawContent)
+                    .linkUrl(law.getLinkUrl())
+                    .build();
+
+            // 생성된 dto 객체를 lawList에 추가합니다.
+            lawList.add(dto);
+
+        });
+
+        return ResponseEntity.status(HttpStatus.OK).body(lawList);
     }
 
 
-    public String crawlLawContent(String url) { 
+    public String crawlLawContent(String url) {
         try {
             Document doc = Jsoup.connect(url).get();
             Element contentElement = doc.selectFirst("#summaryContentDiv");

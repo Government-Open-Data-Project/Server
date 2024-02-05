@@ -39,7 +39,7 @@ public class LawService {
                 "?KEY=%s&Type=json&pIndex=%d&pSize=%d",
                 governmentApiKey, // API 키 변수 사용
                 1, // pIndex 값
-                3 // pSize 값 수정
+                10 // pSize 값 수정
         );
 
         String urlWithParams = url + queryParams;
