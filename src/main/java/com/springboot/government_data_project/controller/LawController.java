@@ -1,15 +1,14 @@
 package com.springboot.government_data_project.controller;
 
 import com.springboot.government_data_project.dto.law.*;
+import com.springboot.government_data_project.dto.userProfile.UserProfileUpdateDTO;
 import com.springboot.government_data_project.service.LawService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -82,6 +81,31 @@ public class LawController {
             String lawContent = crawlLawContent(law.getLinkUrl());
 
 
+
+            // LawResponseDTO 객체를 빌더 패턴을 사용하여 생성합니다.
+            LawResponseDTO dto = LawResponseDTO.builder()
+                    .title(law.getTitle())
+                    .content(lawContent)
+                    .linkUrl(law.getLinkUrl())
+                    .build();
+
+            // 생성된 dto 객체를 lawList에 추가합니다.
+            lawList.add(dto);
+
+        });
+
+        return ResponseEntity.status(HttpStatus.OK).body(lawList);
+    }
+
+    @Operation(summary = "법안 추천")
+    @PostMapping ("/recommended")
+    public ResponseEntity<List<LawResponseDTO>> getReconmmendedLawData(@RequestBody UserProfileUpdateDTO userProfileUpdateDTO){
+        WrapperResponseDTO wrapperResponseDTO = lawService.getLaw();
+        List<LawResponseDTO> lawList = new ArrayList<>();
+        List<LawResponseDTO> laws = wrapperResponseDTO.getTvbpmbill11().get(1).getRow();
+        laws.forEach(law -> {
+            // 크롤링 함수 crawlLawContent을 호출하여 법률 내용을 가져옵니다.
+            String lawContent = crawlLawContent(law.getLinkUrl());
 
             // LawResponseDTO 객체를 빌더 패턴을 사용하여 생성합니다.
             LawResponseDTO dto = LawResponseDTO.builder()
