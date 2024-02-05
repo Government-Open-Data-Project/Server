@@ -164,7 +164,7 @@ public class LawController {
                 cleanText = cleanText.replace("제안이유 및 주요내용", "제안이유 및 주요내용\n\n");
 
                 // 크롤링된 데이터 로깅
-                System.out.println("Crawled Data: " + cleanText);
+                //System.out.println("Crawled Data: " + cleanText);
                 return cleanText;
             }
         } catch (IOException e) {
