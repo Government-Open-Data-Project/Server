@@ -24,7 +24,7 @@ public class ChatGPTService {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     final String assistant_id = "asst_M8PbBHybjonvFhIlWjuhHdaO";
-    final String thread_id = "thread_tfMlWHRdu2DvHtBbEKhbSNSX";
+    String thread_id = "thread_iUbSh6bRuyYtwolIQJ1q9YmG";
 
     public ChatGPTService() {
         this.httpClient = HttpClient.newHttpClient();
@@ -39,8 +39,7 @@ public class ChatGPTService {
     public void run() {
 
         final String assistant_id = "asst_M8PbBHybjonvFhIlWjuhHdaO";
-        final String thread_id = "thread_tfMlWHRdu2DvHtBbEKhbSNSX";
-
+        
         //LOAD YOUR API KEY
         Properties properties = new Properties();
 
@@ -57,6 +56,7 @@ public class ChatGPTService {
 
             ThreadResponseDTO threadResponse = client.createThread();
             log.info("thread id : " + threadResponse.id());
+            thread_id = threadResponse.id();
 
             MessageResponseDTO messageResponse = client.sendMessage(thread_id, "user", "What is the capital of Italy?");
 
@@ -93,7 +93,7 @@ public class ChatGPTService {
         AssistantRequestDTO dto = new AssistantRequestDTO("gpt-3.5-turbo-0125", initialPrompt);
         String response = post(url, dto);
         return objectMapper.readValue(response, AssistantResponseDTO.class);
-    } 
+    }
 
     public ThreadResponseDTO createThread() throws Exception {
         String url = "https://api.openai.com/v1/threads";
@@ -112,7 +112,6 @@ public class ChatGPTService {
 
     public MessageResponseDTO sendMessageTest(String role, String content) throws Exception {
         final String assistant_id = "asst_M8PbBHybjonvFhIlWjuhHdaO";
-        final String thread_id = "thread_TceYRhep06JKefFM5pZr2hRw";
         ChatGPTService client = new ChatGPTService(apiKey);
 
         MessageResponseDTO messageResponse = client.sendMessage(thread_id, "user", content);
