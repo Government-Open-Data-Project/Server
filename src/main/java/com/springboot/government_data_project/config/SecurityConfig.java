@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         //gpt는 인증 필요
                         authorizeRequests.requestMatchers("/api/v1/login/oauth").permitAll() //모든 링크의 요청 승인(개발 동안만)
-                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())

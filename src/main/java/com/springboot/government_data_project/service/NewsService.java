@@ -3,8 +3,14 @@ package com.springboot.government_data_project.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.net.HttpHeaders;
+import com.springboot.government_data_project.domain.News;
+import com.springboot.government_data_project.dto.news.NewsListDTO;
 import com.springboot.government_data_project.dto.news.NewsResponseDTO;
+import com.springboot.government_data_project.dto.news.RowDTO;
+import com.springboot.government_data_project.repository.NewsRepository;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,6 +23,9 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public class NewsService {
     private final WebClient webClient;
+
+    @Autowired
+    private NewsRepository newsRepository;
 
     private final String responseType = "json";
     public NewsService(WebClient.Builder webClientBuilder){
@@ -36,32 +45,56 @@ public class NewsService {
 
     }
 
+    protected boolean isNewsExists(String newsUrl){
+        return newsRepository.existsNewsByUrl(newsUrl);
+    }
 
-        public NewsResponseDTO getNews(String date) throws JsonProcessingException {
-    //        LocalDate regDate = LocalDate.of(year, month, day);
-    //        String formattedRegDate = regDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    public void saveNews(RowDTO rowDTO){
+        if(isNewsExists(rowDTO.getLinkUrl()) == false){
+            News news = new News(rowDTO.getCompMainTitle(),rowDTO.getRegDate(), rowDTO.getCompContent(), rowDTO.getLinkUrl());
+            newsRepository.save(news);
+        }
+    }
 
-             String jsonString = webClient.get().uri(
-                            uriBuilder -> uriBuilder
-                                    .path("/nbzyjjyoamdqqjorw")
-                                    .queryParam("Type", responseType)
-                                    .queryParam("REG_DATE" ,date)
-                                    .queryParam("pIndex", 1)
-                                    .queryParam("pSize", 5)
-                                    .build())
-                    .accept(MediaType.APPLICATION_JSON) // Accept 헤더 설정
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            NewsResponseDTO newsResponseDTO = objectMapper.readValue(jsonString, NewsResponseDTO.class);
-
-            System.out.println("뉴스 가자오기 성공 : " + newsResponseDTO.getDataList().size());
-
-            return newsResponseDTO;
+    public void getNewsByAgeRange(String date, String age){
+        List<News> newsList;
+        switch (age){
+            case "20":
 
         }
+    }
+
+    /**
+     * 토론회/세미나 뉴스
+     * @param date
+     * @return
+     * @throws JsonProcessingException
+     */
+    public NewsResponseDTO getDebateNews(String date) throws JsonProcessingException {
+//        LocalDate regDate = LocalDate.of(year, month, day);
+//        String formattedRegDate = regDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+         String jsonString = webClient.get().uri(
+                        uriBuilder -> uriBuilder
+                                .path("/nbzyjjyoamdqqjorw")
+                                .queryParam("Type", responseType)
+                                .queryParam("REG_DATE" ,date)
+                                .queryParam("pIndex", 1)
+                                .queryParam("pSize", 5)
+                                .build())
+                .accept(MediaType.APPLICATION_JSON) // Accept 헤더 설정
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        NewsResponseDTO newsResponseDTO = objectMapper.readValue(jsonString, NewsResponseDTO.class);
+
+        System.out.println("가져온 기사 갯수 : " + newsResponseDTO.getDataList().get(0).getHead().get(0).getListTotalCount());
+
+        return newsResponseDTO;
+
+    }
 
 
 }
