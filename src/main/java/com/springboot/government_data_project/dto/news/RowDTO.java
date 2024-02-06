@@ -1,6 +1,7 @@
 package com.springboot.government_data_project.dto.news;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Column;
 import lombok.Data;
 @Data
 public class RowDTO {

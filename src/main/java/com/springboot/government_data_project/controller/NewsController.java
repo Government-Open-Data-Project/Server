@@ -44,6 +44,57 @@ public class NewsController
         NewsListDTO newsListDTO = new NewsListDTO();
         //date 형식이 날짜 형식인지 확인
         if(isValidDate(date)){
+
+            /**
+             * 토론회 뉴스
+             */
+            NewsResponseDTO newsResponseDTO = newsService.getDebateNews(date); //토론회 뉴스
+            if(newsResponseDTO.getResult() == null) { //date에 해당하는 뉴스 기사 존재
+                newsListDTO.getNewsList().stream().forEach(newsRow ->{ //뉴스 디비에 저장
+                    newsService.saveNews(newsRow);
+                });
+
+                newsListDTO.addNews(newsResponseDTO.getDataList().get(1).getRow()); //모든 기사 넣기
+
+
+            }
+
+            /**
+             * 정당 뉴스
+             */
+            newsResponseDTO = newsService.getPoliticalParty(date); //토론회 뉴스
+            if(newsResponseDTO.getResult() == null) { //date에 해당하는 뉴스 기사 존재
+                newsListDTO.addNews(newsResponseDTO.getDataList().get(1).getRow()); //모든 기사 넣기
+
+                newsListDTO.getNewsList().stream().forEach(newsRow ->{ //뉴스 디비에 저장
+                    newsService.saveNews(newsRow);
+                });
+            }
+
+            /**
+             * 위원회 뉴스
+             */
+            newsResponseDTO = newsService.getCommittee(date); //토론회 뉴스
+            if(newsResponseDTO.getResult() == null) { //date에 해당하는 뉴스 기사 존재
+                newsListDTO.addNews(newsResponseDTO.getDataList().get(1).getRow()); //모든 기사 넣기
+
+                newsListDTO.getNewsList().stream().forEach(newsRow ->{ //뉴스 디비에 저장
+                    newsService.saveNews(newsRow);
+                });
+            }
+
+
+
+        }
+        return newsListDTO;
+
+    }
+
+    @GetMapping("/news/test")
+    public NewsListDTO geTestNews(@RequestParam("date") String date) throws JsonProcessingException {
+        NewsListDTO newsListDTO = new NewsListDTO();
+        //date 형식이 날짜 형식인지 확인
+        if(isValidDate(date)){
             NewsResponseDTO newsResponseDTO = newsService.getPoliticalParty(date); //해당하는 날짜의 뉴스를 가져옴
             if(newsResponseDTO.getResult() == null) { //date에 해당하는 뉴스 기사 존재
                 newsListDTO.addNews(newsResponseDTO.getDataList().get(1).getRow()); //모든 기사 넣기
