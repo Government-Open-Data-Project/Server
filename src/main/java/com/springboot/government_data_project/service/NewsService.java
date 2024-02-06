@@ -76,7 +76,7 @@ public class NewsService {
 
          String jsonString = webClient.get().uri(
                         uriBuilder -> uriBuilder
-                                .path("/nbzyjjyoamdqqjorw")
+                                .path("/nzdppcljavkxnylqs")
                                 .queryParam("Type", responseType)
                                 .queryParam("REG_DATE" ,date)
                                 .queryParam("pIndex", 1)
@@ -90,7 +90,7 @@ public class NewsService {
         ObjectMapper objectMapper = new ObjectMapper();
         NewsResponseDTO newsResponseDTO = objectMapper.readValue(jsonString, NewsResponseDTO.class);
 
-        System.out.println("가져온 기사 갯수 : " + newsResponseDTO.getDataList().get(0).getHead().get(0).getListTotalCount());
+        System.out.println("뉴스 가져오기 성공 ");
 
         return newsResponseDTO;
 
