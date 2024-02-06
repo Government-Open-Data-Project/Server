@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class NewsResponseDTO {
 
-    @JsonAlias({"nbzyjjyoamdqqjorw", "nzdppcljavkxnylqs" ,"nuizrfvoaepvwrjtz"})
+    @JsonAlias({"nbzyjjyoamdqqjorw", "nzdppcljavkxnylqs" ,"nuizrfvoaepvwrjtz" , "ndkuweviadcqkbjdl"})
     private List<DataDTO> dataList;
 
     @JsonProperty("RESULT")

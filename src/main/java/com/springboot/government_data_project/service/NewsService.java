@@ -56,6 +56,18 @@ public class NewsService {
         }
     }
 
+    public NewsListDTO getCurrentNews(){
+        NewsListDTO newsListDTO = new NewsListDTO();
+
+        List<News> newsList = newsRepository.findTop25ByOrderByRegDateDesc();
+
+        newsList.forEach(element ->
+                newsListDTO.getNewsList().add(element.toRowData())
+        );
+
+        return newsListDTO;
+    }
+
     public void getNewsByAgeRange(String date, String age){
         List<News> newsList;
         switch (age){
@@ -97,6 +109,12 @@ public class NewsService {
     }
 
 
+    /**
+     * 정당 뉴스
+     * @param date
+     * @return
+     * @throws JsonProcessingException
+     */
     public NewsResponseDTO getPoliticalParty(String date) throws JsonProcessingException {
 //        LocalDate regDate = LocalDate.of(year, month, day);
 //        String formattedRegDate = regDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -117,12 +135,18 @@ public class NewsService {
         ObjectMapper objectMapper = new ObjectMapper();
         NewsResponseDTO newsResponseDTO = objectMapper.readValue(jsonString, NewsResponseDTO.class);
 
-        System.out.println("뉴스 가져오기 성공 ");
+        System.out.println("정당 뉴스 가져오기 성공 ");
 
         return newsResponseDTO;
 
     }
 
+    /**
+     * 위원회 뉴스 가져오기
+     * @param date
+     * @return
+     * @throws JsonProcessingException
+     */
     public NewsResponseDTO getCommittee(String date) throws JsonProcessingException {
 //        LocalDate regDate = LocalDate.of(year, month, day);
 //        String formattedRegDate = regDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -143,7 +167,37 @@ public class NewsService {
         ObjectMapper objectMapper = new ObjectMapper();
         NewsResponseDTO newsResponseDTO = objectMapper.readValue(jsonString, NewsResponseDTO.class);
 
-        System.out.println("뉴스 가져오기 성공 ");
+        System.out.println("위원회 뉴스 가져오기 성공 ");
+
+        return newsResponseDTO;
+
+    }
+
+    /**
+     * 의장단 뉴스 가져오기
+     * @return
+     * @throws JsonProcessingException
+     */
+    public NewsResponseDTO getChairman() throws JsonProcessingException {
+//        LocalDate regDate = LocalDate.of(year, month, day);
+//        String formattedRegDate = regDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        String jsonString = webClient.get().uri(
+                        uriBuilder -> uriBuilder
+                                .path("/ndkuweviadcqkbjdl")
+                                .queryParam("Type", responseType)
+                                .queryParam("pIndex", 1)
+                                .queryParam("pSize", 20)
+                                .build())
+                .accept(MediaType.APPLICATION_JSON) // Accept 헤더 설정
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        NewsResponseDTO newsResponseDTO = objectMapper.readValue(jsonString, NewsResponseDTO.class);
+
+        System.out.println("의장단 뉴스 가져오기 성공 ");
 
         return newsResponseDTO;
 

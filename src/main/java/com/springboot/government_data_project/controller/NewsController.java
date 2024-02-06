@@ -54,8 +54,6 @@ public class NewsController
                     newsService.saveNews(newsRow);
                 });
 
-                newsListDTO.addNews(newsResponseDTO.getDataList().get(1).getRow()); //모든 기사 넣기
-
 
             }
 
@@ -64,7 +62,6 @@ public class NewsController
              */
             newsResponseDTO = newsService.getPoliticalParty(date); //토론회 뉴스
             if(newsResponseDTO.getResult() == null) { //date에 해당하는 뉴스 기사 존재
-                newsListDTO.addNews(newsResponseDTO.getDataList().get(1).getRow()); //모든 기사 넣기
 
                 newsListDTO.getNewsList().stream().forEach(newsRow ->{ //뉴스 디비에 저장
                     newsService.saveNews(newsRow);
@@ -76,14 +73,23 @@ public class NewsController
              */
             newsResponseDTO = newsService.getCommittee(date); //토론회 뉴스
             if(newsResponseDTO.getResult() == null) { //date에 해당하는 뉴스 기사 존재
-                newsListDTO.addNews(newsResponseDTO.getDataList().get(1).getRow()); //모든 기사 넣기
 
                 newsListDTO.getNewsList().stream().forEach(newsRow ->{ //뉴스 디비에 저장
                     newsService.saveNews(newsRow);
                 });
             }
 
+            /**
+             * 의장단
+             */
+            newsResponseDTO = newsService.getChairman(); //토론회 뉴스
+            if(newsResponseDTO.getResult() == null) { //date에 해당하는 뉴스 기사 존재
 
+                newsListDTO.getNewsList().stream().forEach(newsRow ->{ //뉴스 디비에 저장
+                    newsService.saveNews(newsRow);
+                });
+            }
+            newsListDTO = newsService.getCurrentNews();
 
         }
         return newsListDTO;
@@ -109,12 +115,6 @@ public class NewsController
 
     }
 
-    @GetMapping("/news/ageRange")
-    public void getArticleByMostViewInAge(@RequestParam("date") String date, @RequestParam("age") int age){
-        if(isValidDate(date) && isValidAge(age)){ //가능한 형시의 날짜와 나이라면
-
-        }
-    }
 
     // 연령대별 조회수가 높은 뉴스를 가져오는 엔드포인트
     @GetMapping("/top-by-age-group/{age}")
