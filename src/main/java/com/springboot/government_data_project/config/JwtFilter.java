@@ -1,6 +1,5 @@
 package com.springboot.government_data_project.config;
 
-import com.springboot.government_data_project.service.MemberService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

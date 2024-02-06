@@ -2,15 +2,17 @@ package com.springboot.government_data_project.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.springboot.government_data_project.domain.News;
+import com.springboot.government_data_project.dto.news.NaverResponseDTO;
 import com.springboot.government_data_project.dto.news.NewsListDTO;
 import com.springboot.government_data_project.dto.news.NewsResponseDTO;
+import com.springboot.government_data_project.service.NaverSearchService;
 import com.springboot.government_data_project.service.NewsService;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 public class NewsController
 {
     private final NewsService newsService;
+
+    @Autowired
+    private NaverSearchService naverSearchService;
     private static final String DATE_PATTERN = "^\\d{4}-\\d{2}-\\d{2}$";
 
     public NewsController(NewsService newsService){
@@ -50,11 +55,13 @@ public class NewsController
              */
             NewsResponseDTO newsResponseDTO = newsService.getDebateNews(date); //토론회 뉴스
             if(newsResponseDTO.getResult() == null) { //date에 해당하는 뉴스 기사 존재
+                newsListDTO.addAllNews(newsResponseDTO.getDataList().get(1).getRow()); //모든 기사 넣기
+
                 newsListDTO.getNewsList().stream().forEach(newsRow ->{ //뉴스 디비에 저장
                     newsService.saveNews(newsRow);
                 });
 
-
+                newsListDTO.clearNews();
             }
 
             /**
@@ -62,10 +69,13 @@ public class NewsController
              */
             newsResponseDTO = newsService.getPoliticalParty(date); //토론회 뉴스
             if(newsResponseDTO.getResult() == null) { //date에 해당하는 뉴스 기사 존재
+                newsListDTO.addAllNews(newsResponseDTO.getDataList().get(1).getRow()); //모든 기사 넣기
 
                 newsListDTO.getNewsList().stream().forEach(newsRow ->{ //뉴스 디비에 저장
                     newsService.saveNews(newsRow);
                 });
+
+                newsListDTO.clearNews();
             }
 
             /**
@@ -73,10 +83,13 @@ public class NewsController
              */
             newsResponseDTO = newsService.getCommittee(date); //토론회 뉴스
             if(newsResponseDTO.getResult() == null) { //date에 해당하는 뉴스 기사 존재
+                newsListDTO.addAllNews(newsResponseDTO.getDataList().get(1).getRow()); //모든 기사 넣기
 
                 newsListDTO.getNewsList().stream().forEach(newsRow ->{ //뉴스 디비에 저장
                     newsService.saveNews(newsRow);
                 });
+
+                newsListDTO.clearNews();
             }
 
             /**
@@ -85,9 +98,13 @@ public class NewsController
             newsResponseDTO = newsService.getChairman(); //토론회 뉴스
             if(newsResponseDTO.getResult() == null) { //date에 해당하는 뉴스 기사 존재
 
+                newsListDTO.addAllNews(newsResponseDTO.getDataList().get(1).getRow()); //모든 기사 넣기
+
                 newsListDTO.getNewsList().stream().forEach(newsRow ->{ //뉴스 디비에 저장
                     newsService.saveNews(newsRow);
                 });
+
+                newsListDTO.clearNews();
             }
             newsListDTO = newsService.getCurrentNews();
 
@@ -96,21 +113,20 @@ public class NewsController
 
     }
 
-    @GetMapping("/news/test")
-    public NewsListDTO geTestNews(@RequestParam("date") String date) throws JsonProcessingException {
-        NewsListDTO newsListDTO = new NewsListDTO();
-        //date 형식이 날짜 형식인지 확인
-        if(isValidDate(date)){
-            NewsResponseDTO newsResponseDTO = newsService.getPoliticalParty(date); //해당하는 날짜의 뉴스를 가져옴
-            if(newsResponseDTO.getResult() == null) { //date에 해당하는 뉴스 기사 존재
-                newsListDTO.addNews(newsResponseDTO.getDataList().get(1).getRow()); //모든 기사 넣기
 
-                newsListDTO.getNewsList().stream().forEach(newsRow ->{ //뉴스 디비에 저장
-                    newsService.saveNews(newsRow);
-                });
-            }
 
-        }
+    @GetMapping("/news/region")
+    public NewsListDTO geTestNews(@RequestParam("region") String region) throws JsonProcessingException {
+
+        naverSearchService.search(region + " 정당");
+        naverSearchService.search(region + " 국회");
+        naverSearchService.search(region + " 법안");
+        naverSearchService.search(region + " 법률");
+        naverSearchService.search(region + " 의회");
+        naverSearchService.search(region + " 의원");
+
+        NewsListDTO newsListDTO = newsService.getRegionNews(region);
+
         return newsListDTO;
 
     }
@@ -153,4 +169,5 @@ public class NewsController
             throw new IllegalArgumentException("Invalid age: " + age);
         }
     }
+
 }

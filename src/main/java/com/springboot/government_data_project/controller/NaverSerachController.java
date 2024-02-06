@@ -13,14 +13,14 @@ public class NaverSerachController {
     @Autowired
     private NaverSearchService naverSearchService;
 
-    @GetMapping("/naver")
-    public ResponseEntity<String> searchNaver(@RequestParam String query) {
-        try {
-            String result = naverSearchService.search(query);
-            return ResponseEntity.ok().body(result);
-        } catch (Exception e) {
-            // 오류 처리 로직 (예: 로깅)
-            return ResponseEntity.internalServerError().body("검색 중 오류 발생");
-        }
-    }
+//    @GetMapping("/naver")
+//    public ResponseEntity<String> searchNaver(@RequestParam String query) {
+//        try {
+//            String result = naverSearchService.search(query);
+//            return ResponseEntity.ok().body(result);
+//        } catch (Exception e) {
+//            // 오류 처리 로직 (예: 로깅)
+//            return ResponseEntity.internalServerError().body("검색 중 오류 발생");
+//        }
+//    }
 }
