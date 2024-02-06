@@ -3,6 +3,7 @@ package com.springboot.government_data_project.dto.news;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import jakarta.persistence.Column;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

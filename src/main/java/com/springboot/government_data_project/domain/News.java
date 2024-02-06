@@ -22,6 +22,8 @@ public class News {
 
     private String compMainTitle;
     private String regDate;
+
+    @Column(columnDefinition="LONGTEXT")
     private String compContent;
     private String url;
 
