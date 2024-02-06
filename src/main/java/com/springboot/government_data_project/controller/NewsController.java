@@ -67,12 +67,18 @@ public class NewsController
 
     // 연령대별 조회수가 높은 뉴스를 가져오는 엔드포인트
     @GetMapping("/top-by-age-group/{age}")
-    public ResponseEntity<List<News>> getTopNewsByAgeGroup(@PathVariable int age) {
-        String ageGroup = determineAgeGroup(age); 
+    public ResponseEntity<NewsListDTO> getTopNewsByAgeGroup(@PathVariable int age) {
+        String ageGroup = determineAgeGroup(age);
+        NewsListDTO newsListDTO = new NewsListDTO();
 
         try {
             List<News> newsList = newsService.getTopNewsByAgeGroupViews(ageGroup);
-            return ResponseEntity.ok(newsList);
+
+            newsList.forEach(element ->
+                    newsListDTO.getNewsList().add(element.toRowData())
+            );
+
+            return ResponseEntity.ok(newsListDTO);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build(); // 잘못된 연령대가 입력된 경우
         } catch (Exception e) {
@@ -96,6 +102,4 @@ public class NewsController
             throw new IllegalArgumentException("Invalid age: " + age);
         }
     }
-
-
 }
