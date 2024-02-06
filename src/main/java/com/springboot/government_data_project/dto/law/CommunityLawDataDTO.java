@@ -21,6 +21,8 @@ public class CommunityLawDataDTO {
     @JsonProperty("LINK_URL") // API 응답에서의 LINK_URL을 linkUrl 필드에 매핑
     private String linkUrl;
 
-    private Integer like;
-    private Integer unLike;
+    @Builder.Default
+    private Integer like = 0;
+    @Builder.Default
+    private Integer unLike = 0;
 }

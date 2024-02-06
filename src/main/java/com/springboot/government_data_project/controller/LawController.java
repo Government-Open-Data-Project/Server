@@ -1,9 +1,12 @@
 package com.springboot.government_data_project.controller;
 
+import com.springboot.government_data_project.domain.VoteType;
 import com.springboot.government_data_project.dto.law.*;
 import com.springboot.government_data_project.dto.userProfile.UserProfileUpdateDTO;
+import com.springboot.government_data_project.repository.LawRepository;
 import com.springboot.government_data_project.service.LawService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -11,8 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,11 +28,13 @@ import org.jsoup.nodes.Element;
 public class LawController {
 
     private final LawService lawService;
+    private final LawRepository lawRepository;
     private static final Logger logger = LoggerFactory.getLogger(LawController.class);
 
 
-    public LawController(LawService lawService) {
+    public LawController(LawService lawService, LawRepository lawRepository) {
         this.lawService = lawService;
+        this.lawRepository = lawRepository;
     }
     @Operation(summary = "테스트 기능")
     @GetMapping("/test")
@@ -56,24 +64,13 @@ public class LawController {
         });
 
 
-
-        crawlLawContent("https://likms.assembly.go.kr/bill/billDetail.do?billId=PRC_T2S4M0L1K1T7R1R0Z2X5E4D0C7B0J7");
-
-
         return ResponseEntity.ok(lawList);
     }
 
     @Operation(summary = "법안 검색하는 기능")
     @GetMapping("/search")
     public ResponseEntity<List<LawResponseDTO>> searchLaws(SearchCriteria criteria) {
-        List<LawResponseDTO> laws = lawService.searchLaws(criteria);
-        return ResponseEntity.ok(laws);
-    }
-
-    @Operation(summary = "법안 정책 가져오는 기능")
-    @GetMapping
-    public ResponseEntity<List<LawResponseDTO>> getLawData(){
-        WrapperResponseDTO wrapperResponseDTO = lawService.getLaw();
+        WrapperResponseDTO wrapperResponseDTO = lawService.searchLaws(criteria.getKeyword());
         List<LawResponseDTO> lawList = new ArrayList<>();
         List<LawResponseDTO> laws = wrapperResponseDTO.getTvbpmbill11().get(1).getRow();
         laws.forEach(law -> {
@@ -92,6 +89,42 @@ public class LawController {
             // 생성된 dto 객체를 lawList에 추가합니다.
             lawList.add(dto);
 
+        });
+
+        return ResponseEntity.status(HttpStatus.OK).body(lawList);
+    }
+
+    @Operation(summary = "법안 정책 가져오는 기능")
+    @GetMapping
+    public ResponseEntity<List<LawResponseDTO>> getLawData(){
+        WrapperResponseDTO wrapperResponseDTO = lawService.getLaw();
+        List<LawResponseDTO> lawList = new ArrayList<>();
+        List<LawResponseDTO> laws = wrapperResponseDTO.getTvbpmbill11().get(1).getRow();
+        laws.forEach(law -> {
+            // 데이터베이스에서 해당 bill_id를 가진 엔티티의 존재 여부를 확인합니다.
+            Optional<LawResponseDTO> existingLaw = lawRepository.findById(law.getBill_id());
+            if (!existingLaw.isPresent()) { // 해당 엔티티가 존재하지 않는 경우
+                // 크롤링 함수 crawlLawContent을 호출하여 법률 내용을 가져옵니다.
+                String lawContent = crawlLawContent(law.getLinkUrl());
+
+                // LawResponseDTO 객체를 빌더 패턴을 사용하여 생성합니다.
+                LawResponseDTO dto = LawResponseDTO.builder()
+                        .bill_id(law.getBill_id())
+                        .title(law.getTitle())
+                        .content(lawContent)
+                        .linkUrl(law.getLinkUrl())
+                        .build();
+
+                // 새로운 데이터를 데이터베이스에 저장합니다.
+                lawRepository.save(dto);
+
+                // 생성된 dto 객체를 lawList에 추가합니다.
+                lawList.add(dto);
+            } else {
+                lawList.add(existingLaw.get());
+                // 데이터가 이미 존재하는 경우, 필요한 로직을 수행합니다. (예: 로그 출력)
+                System.out.println("Data for bill_id " + law.getBill_id() + " already exists and will not be updated.");
+            }
         });
 
         return ResponseEntity.status(HttpStatus.OK).body(lawList);
@@ -124,28 +157,52 @@ public class LawController {
 
     @Operation(summary = "법안 정책 커뮤니티")
     @GetMapping("/community")
-    public ResponseEntity<List<CommunityLawDataDTO>> getCommunityLawData(){
-        List<CommunityLawDataDTO> lawList = new ArrayList<>();
+    public ResponseEntity<List<LawResponseDTO>> getCommunityLawData(){
+        WrapperResponseDTO wrapperResponseDTO = lawService.getLaw();
+        List<LawResponseDTO> lawList = new ArrayList<>();
+        List<LawResponseDTO> laws = wrapperResponseDTO.getTvbpmbill11().get(1).getRow();
+        laws.forEach(law -> {
+            // 데이터베이스에서 해당 bill_id를 가진 엔티티의 존재 여부를 확인합니다.
+            Optional<LawResponseDTO> existingLaw = lawRepository.findById(law.getBill_id());
+            if (!existingLaw.isPresent()) { // 해당 엔티티가 존재하지 않는 경우
+                // 크롤링 함수 crawlLawContent을 호출하여 법률 내용을 가져옵니다.
+                String lawContent = crawlLawContent(law.getLinkUrl());
 
-        lawList.add(new CommunityLawDataDTO().builder()
-                .title("커뮤니티 법안 제목 1")
-                .content("커뮤니티 법안 내용 1")
-                .linkUrl("http://url")
-                .like(40)
-                .unLike(10)
-                .build());
+                // LawResponseDTO 객체를 빌더 패턴을 사용하여 생성합니다.
+                LawResponseDTO dto = LawResponseDTO.builder()
+                        .bill_id(law.getBill_id())
+                        .title(law.getTitle())
+                        .content(lawContent)
+                        .linkUrl(law.getLinkUrl())
+                        .build();
 
-        lawList.add(new CommunityLawDataDTO().builder()
-                .title("커뮤니티 법안 제목 2")
-                .content("커뮤니티 법안 내용 2")
-                .linkUrl("http://url")
-                .like(132)
-                .unLike(27)
-                .build());
+                // 새로운 데이터를 데이터베이스에 저장합니다.
+                lawRepository.save(dto);
+
+                // 생성된 dto 객체를 lawList에 추가합니다.
+                lawList.add(dto);
+            } else {
+                lawList.add(existingLaw.get());
+                // 데이터가 이미 존재하는 경우, 필요한 로직을 수행합니다. (예: 로그 출력)
+                System.out.println("Data for bill_id " + law.getBill_id() + " already exists and will not be updated.");
+            }
+        });
+
 
         return ResponseEntity.status(HttpStatus.OK).body(lawList);
     }
 
+    @Operation(summary = "법안에 대해 좋아요/싫어요 투표 기능")
+    @PostMapping("/{billId}/vote")
+    public ResponseEntity<?> vote(@PathVariable Long billId, @RequestBody VoteRequest voteRequest, Principal principal) {
+        // UserDetails에서 사용자 ID 추출 (인증 구현 필요)
+        Long userId = Long.parseLong(principal.getName());
+        VoteType voteType = VoteType.valueOf(voteRequest.getVoteType().toUpperCase());
+
+        lawService.vote(billId, userId, voteType);
+
+        return ResponseEntity.ok().build();
+    }
 
     public String crawlLawContent(String url) {
         try {
@@ -164,7 +221,7 @@ public class LawController {
                 cleanText = cleanText.replace("제안이유 및 주요내용", "제안이유 및 주요내용\n\n");
 
                 // 크롤링된 데이터 로깅
-                System.out.println("Crawled Data: " + cleanText);
+                //System.out.println("Crawled Data: " + cleanText);
                 return cleanText;
             }
         } catch (IOException e) {
@@ -175,4 +232,11 @@ public class LawController {
     }
 
 
+}
+
+@Data
+class VoteRequest {
+    private String voteType; // "LIKE" or "DISLIKE"
+
+    // Getter와 Setter 생략
 }
