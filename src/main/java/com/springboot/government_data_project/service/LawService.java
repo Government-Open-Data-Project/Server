@@ -3,7 +3,7 @@ package com.springboot.government_data_project.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.government_data_project.domain.LawVote;
 import com.springboot.government_data_project.domain.VoteType;
-import com.springboot.government_data_project.dto.law.LawResponseDTO;
+import com.springboot.government_data_project.domain.Law;
 import com.springboot.government_data_project.dto.law.WrapperResponseDTO;
 import com.springboot.government_data_project.repository.LawRepository;
 import com.springboot.government_data_project.repository.LawVoteRepository;
@@ -41,9 +41,9 @@ public class LawService {
     }
 
     @Transactional
-    public void vote(Long billId, Long userId, VoteType voteType) {
+    public void vote(Long billId, String userId, VoteType voteType) {
         // 해당 법안 찾기
-        LawResponseDTO law = lawRepository.findById(billId)
+        Law law = lawRepository.findByBillId(billId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid billId: " + billId));
 
         // 이전 투표 기록 확인
@@ -56,11 +56,20 @@ public class LawService {
             if (currentVote.getVoteType().equals(voteType)) {
                 return; // 이미 투표한 경우, 투표를 무효화하지 않고 무시합니다.
             } else {
-                // 반대 투표를 취소
-                if (voteType == VoteType.LIKE) {
-                    law.setDislikes(law.getDislikes() - 1); // 이전에 싫어요 했던 것을 취소
-                } else if (voteType == VoteType.DISLIKE) {
-                    law.setLikes(law.getLikes() - 1); // 이전에 좋아요 했던 것을 취소
+                // 반대 투표를 취소하고 새 투표 반영
+                switch (currentVote.getVoteType()) {
+                    case LIKE:
+                        law.setLikes(law.getLikes() - 1); // 이전에 좋아요 했던 것을 취소
+                        if (voteType == VoteType.DISLIKE) {
+                            law.setDislikes(law.getDislikes() + 1); // 새로운 싫어요 반영
+                        }
+                        break;
+                    case DISLIKE:
+                        law.setDislikes(law.getDislikes() - 1); // 이전에 싫어요 했던 것을 취소
+                        if (voteType == VoteType.LIKE) {
+                            law.setLikes(law.getLikes() + 1); // 새로운 좋아요 반영
+                        }
+                        break;
                 }
 
                 // 기존 투표 기록을 새로운 투표로 업데이트
