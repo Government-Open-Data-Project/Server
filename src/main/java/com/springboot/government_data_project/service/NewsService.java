@@ -68,6 +68,17 @@ public class NewsService {
         return newsListDTO;
     }
 
+    public NewsListDTO getRegionNews(String region){
+        NewsListDTO newsListDTO = new NewsListDTO();
+
+        List<News> newsList = newsRepository.findTop25ByCompMainTitleContainingOrCompContentContainingOrderByRegDateDesc(region, region);
+
+        newsList.forEach(element ->
+                newsListDTO.getNewsList().add(element.toRowData())
+        );
+        return newsListDTO;
+    }
+
     public void getNewsByAgeRange(String date, String age){
         List<News> newsList;
         switch (age){

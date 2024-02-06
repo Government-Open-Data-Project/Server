@@ -1,6 +1,14 @@
 package com.springboot.government_data_project.service;
 
 // 네이버 검색 API 예제 - 블로그 검색
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.springboot.government_data_project.domain.News;
+import com.springboot.government_data_project.dto.news.NaverResponseDTO;
+import com.springboot.government_data_project.dto.news.NewsListDTO;
+import com.springboot.government_data_project.dto.news.RowDTO;
+import com.springboot.government_data_project.repository.NewsRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -9,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -16,7 +25,9 @@ public class NaverSearchService {
     String clientId = "Ep0D4n1_bLF30ZC4gACJ"; //애플리케이션 클라이언트 아이디
     String clientSecret = "gmeLrdmzqG"; //애플리케이션 클라이언트 시크릿
 
-    public String search(String query) {
+    @Autowired
+    private NewsRepository newsRepository;
+    public void search(String query) throws JsonProcessingException {
         String text;
         try {
             text = URLEncoder.encode(query, "UTF-8");
@@ -29,7 +40,42 @@ public class NaverSearchService {
         Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("X-Naver-Client-Id", clientId);
         requestHeaders.put("X-Naver-Client-Secret", clientSecret);
-        return get(apiURL, requestHeaders);
+        String responseJson = get(apiURL, requestHeaders);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Map<String, Object> apiJson = (Map<String, Object>) objectMapper.readValue(responseJson, Map.class);
+        List<Map<String, Object>> itemsList = (List<Map<String, Object>>) apiJson.get("items");
+
+        NewsListDTO newsListDTO = new NewsListDTO();
+
+        for (Map<String, Object> item : itemsList) {
+            String compMainTitle = (String) item.get("title");
+            String regDate = (String) item.get("pubDate");
+            String compContent = (String) item.get("description");
+            String linkUrl = (String) item.get("link");
+
+            RowDTO rowDTO = new RowDTO(compMainTitle, regDate, compContent, linkUrl);
+            newsListDTO.addNews(rowDTO);
+        }
+
+        saveNews(newsListDTO); //db저장
+
+        return;
+    }
+
+    protected boolean isNewsExists(String newsUrl){
+        return newsRepository.existsNewsByUrl(newsUrl);
+    }
+
+    public void saveNews(NewsListDTO newsListDTO){
+        newsListDTO.getNewsList().stream().forEach( row ->{
+            if(isNewsExists(row.getLinkUrl()) == false){
+                News news = new News(row.getCompMainTitle(),row.getRegDate(), row.getCompContent(), row.getLinkUrl());
+                newsRepository.save(news);
+            }
+        });
+
     }
 
     public void run() {
