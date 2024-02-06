@@ -1,5 +1,6 @@
 package com.springboot.government_data_project.domain;
 
+import com.springboot.government_data_project.dto.news.RowDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,5 +43,14 @@ public class News {
         this.compContent = compContent;
         this.url = url;
 
+    }
+
+    public RowDTO toRowData() {
+        return new RowDTO().builder()
+                .compContent(this.compContent)
+                .regDate(this.regDate)
+                .compMainTitle(this.compMainTitle)
+                .linkUrl(this.url)
+                .build();
     }
 }
