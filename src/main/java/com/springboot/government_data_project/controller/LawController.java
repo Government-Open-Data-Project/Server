@@ -155,7 +155,7 @@ public class LawController {
 
         });
 
-        return ResponseEntity.status(HttpStatus.OK).body(lawList);
+        return ResponseEntity.status(HttpStatus.CREATED).body(lawList);
     }
 
     @Operation(summary = "법안 정책 커뮤니티")
