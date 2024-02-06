@@ -97,4 +97,21 @@ public class NewsService {
     }
 
 
+    // 연령대별 조회수를 기준으로 뉴스를 가져오는 메서드
+    public List<News> getTopNewsByAgeGroupViews(String ageGroup) {
+        switch (ageGroup.toLowerCase()) {
+            case "twenties":
+                return newsRepository.findAllByOrderByTwentiesViewsDesc();
+            case "thirties":
+                return newsRepository.findAllByOrderByThirtiesViewsDesc();
+            case "forties":
+                return newsRepository.findAllByOrderByFortiesViewsDesc();
+            case "fifties":
+                return newsRepository.findAllByOrderByFiftiesViewsDesc();
+            case "sixties":
+                return newsRepository.findAllByOrderBySixtiesViewsDesc();
+            default:
+                throw new IllegalArgumentException("Invalid age group: " + ageGroup);
+        }
+    }
 }
