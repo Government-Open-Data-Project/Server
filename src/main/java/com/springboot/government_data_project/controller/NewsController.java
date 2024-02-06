@@ -44,7 +44,7 @@ public class NewsController
         NewsListDTO newsListDTO = new NewsListDTO();
         //date 형식이 날짜 형식인지 확인
         if(isValidDate(date)){
-            NewsResponseDTO newsResponseDTO = newsService.getDebateNews(date); //해당하는 날짜의 뉴스를 가져옴
+            NewsResponseDTO newsResponseDTO = newsService.getPoliticalParty(date); //해당하는 날짜의 뉴스를 가져옴
             if(newsResponseDTO.getResult() == null) { //date에 해당하는 뉴스 기사 존재
                 newsListDTO.addNews(newsResponseDTO.getDataList().get(1).getRow()); //모든 기사 넣기
 
