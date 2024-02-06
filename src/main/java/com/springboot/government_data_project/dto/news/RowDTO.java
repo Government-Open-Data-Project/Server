@@ -1,9 +1,16 @@
 package com.springboot.government_data_project.dto.news;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import jakarta.persistence.Column;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RowDTO {
     @JsonProperty("COMP_MAIN_TITLE")
     private String compMainTitle;
@@ -16,4 +23,5 @@ public class RowDTO {
 
     @JsonProperty("LINK_URL")
     private String linkUrl;
+
 }

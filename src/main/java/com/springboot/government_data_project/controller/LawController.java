@@ -72,6 +72,9 @@ public class LawController {
     public ResponseEntity<List<LawResponseDTO>> searchLaws(SearchCriteria criteria) {
         WrapperResponseDTO wrapperResponseDTO = lawService.searchLaws(criteria.getKeyword());
         List<LawResponseDTO> lawList = new ArrayList<>();
+        if(wrapperResponseDTO.getTvbpmbill11() == null){
+            return ResponseEntity.ok().body(lawList);
+        }
         List<LawResponseDTO> laws = wrapperResponseDTO.getTvbpmbill11().get(1).getRow();
         laws.forEach(law -> {
             // 크롤링 함수 crawlLawContent을 호출하여 법률 내용을 가져옵니다.
