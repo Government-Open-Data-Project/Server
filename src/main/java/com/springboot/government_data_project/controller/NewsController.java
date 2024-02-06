@@ -68,7 +68,7 @@ public class NewsController
     // 연령대별 조회수가 높은 뉴스를 가져오는 엔드포인트
     @GetMapping("/top-by-age-group/{age}")
     public ResponseEntity<List<News>> getTopNewsByAgeGroup(@PathVariable int age) {
-        String ageGroup = determineAgeGroup(age);
+        String ageGroup = determineAgeGroup(age); 
 
         try {
             List<News> newsList = newsService.getTopNewsByAgeGroupViews(ageGroup);
