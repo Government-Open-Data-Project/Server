@@ -44,7 +44,7 @@ public class NewsController
         NewsListDTO newsListDTO = new NewsListDTO();
         //date 형식이 날짜 형식인지 확인
         if(isValidDate(date)){
-            NewsResponseDTO newsResponseDTO = newsService.getDebateNews(date); //해당하는 날짜의 뉴스를 가져옴
+            NewsResponseDTO newsResponseDTO = newsService.getPoliticalParty(date); //해당하는 날짜의 뉴스를 가져옴
             if(newsResponseDTO.getResult() == null) { //date에 해당하는 뉴스 기사 존재
                 newsListDTO.addNews(newsResponseDTO.getDataList().get(1).getRow()); //모든 기사 넣기
 
@@ -67,18 +67,18 @@ public class NewsController
 
     // 연령대별 조회수가 높은 뉴스를 가져오는 엔드포인트
     @GetMapping("/top-by-age-group/{age}")
-    public ResponseEntity<List<News>> getTopNewsByAgeGroup(@PathVariable int age) {
+    public ResponseEntity<NewsListDTO> getTopNewsByAgeGroup(@PathVariable int age) {
         String ageGroup = determineAgeGroup(age);
         NewsListDTO newsListDTO = new NewsListDTO();
 
         try {
-            List<News> newsList = newsService.get(ageGroup);
+            List<News> newsList = newsService.getTopNewsByAgeGroupViews(ageGroup);
 
             newsList.forEach(element ->
                     newsListDTO.getNewsList().add(element.toRowData())
             );
 
-            return ResponseEntity.ok(newsList);
+            return ResponseEntity.ok(newsListDTO);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build(); // 잘못된 연령대가 입력된 경우
         } catch (Exception e) {
