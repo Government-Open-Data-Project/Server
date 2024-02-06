@@ -1,6 +1,8 @@
 package com.springboot.government_data_project.service;
 
 // 네이버 검색 API 예제 - 블로그 검색
+import org.springframework.stereotype.Service;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -9,6 +11,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+@Service
 public class NaverSearchService {
     String clientId = "Ep0D4n1_bLF30ZC4gACJ"; //애플리케이션 클라이언트 아이디
     String clientSecret = "gmeLrdmzqG"; //애플리케이션 클라이언트 시크릿
@@ -21,7 +24,7 @@ public class NaverSearchService {
             throw new RuntimeException("검색어 인코딩 실패", e);
         }
 
-        String apiURL = "https://openapi.naver.com/v1/search/blog?query=" + text; // JSON 결과
+        String apiURL = "https://openapi.naver.com/v1/search/news?query=" + text; // JSON 결과
 
         Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("X-Naver-Client-Id", clientId);

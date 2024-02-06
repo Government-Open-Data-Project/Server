@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/search")
 public class NaverSerachController {
 
-    /*@Autowired
+    @Autowired
     private NaverSearchService naverSearchService;
 
     @GetMapping("/naver")
@@ -22,5 +22,5 @@ public class NaverSerachController {
             // 오류 처리 로직 (예: 로깅)
             return ResponseEntity.internalServerError().body("검색 중 오류 발생");
         }
-    }*/
+    }
 }
