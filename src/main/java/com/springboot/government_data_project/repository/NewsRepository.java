@@ -16,4 +16,13 @@ public interface NewsRepository extends JpaRepository<News, Long> {
 
     List<News> findTop25BySixtiesViews(int ageRange);
 
+    List<News> findAllByOrderByTwentiesViewsDesc();
+
+    List<News> findAllByOrderByThirtiesViewsDesc();
+
+    List<News> findAllByOrderByFortiesViewsDesc();
+
+    List<News> findAllByOrderByFiftiesViewsDesc();
+
+    List<News> findAllByOrderBySixtiesViewsDesc();
 }
