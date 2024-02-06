@@ -20,6 +20,7 @@ public class OauthResourceApi {
     public static LoadDataFromNaverResultDTO loadDataFromNaver(String accessToken){
 
         String headerAuthor = "Bearer " + accessToken;
+        System.out.println(headerAuthor);
         WebClient webClient = WebClient.create(apiURL);
         String getResponseString = webClient.get()
                 .uri(apiURL)
@@ -50,10 +51,6 @@ public class OauthResourceApi {
 
 
         System.out.println("회원가입 : "+ loadDataFromNaverResultDTO);
-
         return loadDataFromNaverResultDTO;
-
-
-
     }
 }
