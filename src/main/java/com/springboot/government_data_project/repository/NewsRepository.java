@@ -6,14 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface NewsRepository extends JpaRepository<News, Long> {
     boolean existsNewsByUrl(String url);
-    List<News> findTop25ByTwentiesViewsOOrderBy(String ageRange);
+    List<News> findTop25ByTwentiesViews(int ageRange);
 
-    List<News> findTop25ByThirtiesViews(String ageRange);
+    List<News> findTop25ByThirtiesViews(int ageRange);
 
-    List<News> findTop25ByFiftiesViews(String ageRange);
+    List<News> findTop25ByFiftiesViews(int ageRange);
 
-    List<News> findTop25ByFortiesViews(String ageRange);
+    List<News> findTop25ByFortiesViews(int ageRange);
 
-    List<News> findTop25BySixtiesViews(String ageRange);
+    List<News> findTop25BySixtiesViews(int ageRange);
 
 }

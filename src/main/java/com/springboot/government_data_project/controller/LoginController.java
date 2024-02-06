@@ -47,13 +47,13 @@ public class LoginController {
         //회원가입
         if(findMember == null){
             System.out.println("회원가입 필요");
-            Long memberId = memberService.join(loadDataFromNaverResultDTO.createMember());
-            String jwt = JwtUtil.createJwt(memberId, jwtSecret, expiredMSec);
+            String userId = memberService.join(loadDataFromNaverResultDTO.createMember());
+            String jwt = JwtUtil.createJwt(userId, jwtSecret, expiredMSec);
             return new LoginResponse(jwt);
         }
         //가입한 회원
         //jwt발급
-        String jwt = JwtUtil.createJwt(findMember.getId(),jwtSecret,expiredMSec);
+        String jwt = JwtUtil.createJwt(findMember.getUserId(),jwtSecret,expiredMSec);
         return new LoginResponse(jwt);
 
     }

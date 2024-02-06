@@ -51,14 +51,14 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         // 토큰에서 id 꺼내기
-        Long memberId = JwtUtil.getMemberId(token, secretKey);
-        log.info("memberId = {}", memberId);
+        String userId = JwtUtil.getUserId(token, secretKey);
+        log.info("userId = {}", userId);
 
 
         // 권한 부여 - 따로 권한 없음
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(
-                        memberId,
+                        userId,
                         null,
                         null); // 생성자를 살펴보니 (arg1, arg2) 는 authenticated false로 만들어지고  (arg1, 2, 3) 은 true로 생성
 
