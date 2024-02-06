@@ -227,6 +227,8 @@ public class NewsService {
                 return newsRepository.findAllByOrderByFiftiesViewsDesc();
             case "sixties":
                 return newsRepository.findAllByOrderBySixtiesViewsDesc();
+            case "seventies":
+                return newsRepository.findAllByOrderBySeventiesViewsDesc();
             default:
                 throw new IllegalArgumentException("Invalid age group: " + ageGroup);
         }

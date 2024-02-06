@@ -37,6 +37,8 @@ public class News {
     private int fiftiesViews = 0;
     @Builder.Default
     private int sixtiesViews = 0;
+    @Builder.Default
+    private int seventiesViews = 0;
 
 
     public News(String compMainTitle,  String regDate , String compContent, String url){

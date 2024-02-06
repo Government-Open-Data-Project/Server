@@ -163,9 +163,12 @@ public class NewsController
             return "forties";
         } else if (age >= 50 && age <= 59) {
             return "fifties";
-        } else if (age >= 60) {
+        } else if (age >= 60 && age <= 69) {
             return "sixties";
-        } else {
+        } else if( age >= 70){
+            return "seventies";
+        }
+        else {
             throw new IllegalArgumentException("Invalid age: " + age);
         }
     }

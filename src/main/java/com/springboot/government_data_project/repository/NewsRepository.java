@@ -16,7 +16,11 @@ public interface NewsRepository extends JpaRepository<News, Long> {
 
     List<News> findAllByOrderBySixtiesViewsDesc();
 
+    List<News> findAllByOrderBySeventiesViewsDesc();
+
     List<News> findTop25ByOrderByRegDateDesc();
+
+
 
     List<News> findTop25ByCompMainTitleContainingOrCompContentContainingOrderByRegDateDesc(String titleRegion, String contentRegion );
 
