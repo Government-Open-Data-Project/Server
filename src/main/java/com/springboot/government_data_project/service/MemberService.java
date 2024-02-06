@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    public Long join(Member member){
+    public String join(Member member){
         memberRepository.save(member); //회원저장
-        return member.getId();
+        return member.getUserId();
     }
 
     public Member findByUserId(String userId){
