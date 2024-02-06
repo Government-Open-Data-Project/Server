@@ -2,6 +2,7 @@ package com.springboot.government_data_project.dto.law;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.springboot.government_data_project.domain.Law;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,6 @@ import java.util.List;
 public class LawListResponseDTO {
 
     @JsonProperty("row")
-    private List<LawResponseDTO> row;
+    private List<Law> row;
 
 }

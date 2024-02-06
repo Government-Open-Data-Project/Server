@@ -1,6 +1,5 @@
 package com.springboot.government_data_project.domain;
 
-import com.springboot.government_data_project.dto.law.LawResponseDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,7 +14,7 @@ public class LawVote {
     private Long billId; // LawResponseDTO의 bill_id에 대응
 
     @Column(name = "user_id")
-    private Long userId;
+    private String userId;
 
     @Enumerated(EnumType.STRING)
     private VoteType voteType;

@@ -8,6 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface LawVoteRepository extends JpaRepository<LawVote, Long> {
-    Optional<LawVote> findByBillIdAndUserId(Long billId, Long userId);
+    Optional<LawVote> findByBillIdAndUserId(Long billId, String userId);
 }
 
