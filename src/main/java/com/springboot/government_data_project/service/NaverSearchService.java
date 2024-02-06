@@ -24,7 +24,7 @@ public class NaverSearchService {
             throw new RuntimeException("검색어 인코딩 실패", e);
         }
 
-        String apiURL = "https://openapi.naver.com/v1/search/blog?query=" + text; // JSON 결과
+        String apiURL = "https://openapi.naver.com/v1/search/news?query=" + text; // JSON 결과
 
         Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("X-Naver-Client-Id", clientId);
