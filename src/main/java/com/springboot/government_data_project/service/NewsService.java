@@ -97,6 +97,32 @@ public class NewsService {
     }
 
 
+    public NewsResponseDTO getPoliticalParty(String date) throws JsonProcessingException {
+//        LocalDate regDate = LocalDate.of(year, month, day);
+//        String formattedRegDate = regDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        String jsonString = webClient.get().uri(
+                        uriBuilder -> uriBuilder
+                                .path("/nbzyjjyoamdqqjorw")
+                                .queryParam("Type", responseType)
+                                .queryParam("REG_DATE" ,date)
+                                .queryParam("pIndex", 1)
+                                .queryParam("pSize", 5)
+                                .build())
+                .accept(MediaType.APPLICATION_JSON) // Accept 헤더 설정
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        NewsResponseDTO newsResponseDTO = objectMapper.readValue(jsonString, NewsResponseDTO.class);
+
+        System.out.println("뉴스 가져오기 성공 ");
+
+        return newsResponseDTO;
+
+    }
+
     // 연령대별 조회수를 기준으로 뉴스를 가져오는 메서드
     public List<News> getTopNewsByAgeGroupViews(String ageGroup) {
         switch (ageGroup.toLowerCase()) {
