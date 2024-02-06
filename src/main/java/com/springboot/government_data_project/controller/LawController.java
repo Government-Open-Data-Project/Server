@@ -2,6 +2,7 @@ package com.springboot.government_data_project.controller;
 
 import com.springboot.government_data_project.domain.VoteType;
 import com.springboot.government_data_project.dto.law.*;
+import com.springboot.government_data_project.dto.userProfile.RecommendProfileDTO;
 import com.springboot.government_data_project.dto.userProfile.UserProfileUpdateDTO;
 import com.springboot.government_data_project.repository.LawRepository;
 import com.springboot.government_data_project.service.LawService;
@@ -135,7 +136,7 @@ public class LawController {
 
     @Operation(summary = "법안 추천")
     @PostMapping ("/recommended")
-    public ResponseEntity<List<LawResponseDTO>> getReconmmendedLawData(@RequestBody UserProfileUpdateDTO userProfileUpdateDTO){
+    public ResponseEntity<List<LawResponseDTO>> getReconmmendedLawData(@RequestBody RecommendProfileDTO userProfileUpdateDTO){
         WrapperResponseDTO wrapperResponseDTO = lawService.getLaw();
         List<LawResponseDTO> lawList = new ArrayList<>();
         List<LawResponseDTO> laws = wrapperResponseDTO.getTvbpmbill11().get(1).getRow();
