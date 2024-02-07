@@ -10,7 +10,15 @@ import lombok.NoArgsConstructor;
 public class NewsListDTO {
     private List<RowDTO> newsList = new ArrayList<>();
 
-    public void addNews(List<RowDTO> rowDTO){
+    public void addAllNews(List<RowDTO> rowDTO){
         this.newsList.addAll(rowDTO);
+    }
+
+    public void addNews(RowDTO rowDTO){
+        this.newsList.add(rowDTO);
+    }
+
+    public void clearNews(){
+        newsList.clear();
     }
 }

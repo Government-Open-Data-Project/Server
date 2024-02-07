@@ -9,6 +9,8 @@ import com.springboot.government_data_project.dto.news.NewsResponseDTO;
 import com.springboot.government_data_project.dto.news.RowDTO;
 import com.springboot.government_data_project.repository.NewsRepository;
 import java.util.List;
+
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 
 
 @Service
+@Transactional
 @Slf4j
 public class NewsService {
     private final WebClient webClient;
@@ -56,6 +59,34 @@ public class NewsService {
         }
     }
 
+    /**
+     * url의 조회수중 ageGroup에 맞는조회수 증가
+     * @param ageGroup
+     * @param url
+     */
+    public void increaseNewsViews(String ageGroup , String url){
+        switch (ageGroup) {
+            case  "twenties" :
+                newsRepository.incrementTwentiesViewByUrl(url);
+                break;
+            case "thirties" :
+                newsRepository.incrementThirtiesViewByUrl(url);
+                break;
+            case "forties" :
+                newsRepository.incrementFortiesViewByUrl(url);
+                break;
+            case "fifties" :
+                newsRepository.incrementFiftiesViewByUrl(url);
+                break;
+            case "sixties" :
+                newsRepository.incrementSixtiesViewByUrl(url);
+                break;
+            case "seventies" :
+                newsRepository.incrementSeventiesViewByUrl(url);
+                break;
+        }
+    }
+
     public NewsListDTO getCurrentNews(){
         NewsListDTO newsListDTO = new NewsListDTO();
 
@@ -65,6 +96,17 @@ public class NewsService {
                 newsListDTO.getNewsList().add(element.toRowData())
         );
 
+        return newsListDTO;
+    }
+
+    public NewsListDTO getRegionNews(String region){
+        NewsListDTO newsListDTO = new NewsListDTO();
+
+        List<News> newsList = newsRepository.findTop25ByCompMainTitleContainingOrCompContentContainingOrderByRegDateDesc(region, region);
+
+        newsList.forEach(element ->
+                newsListDTO.getNewsList().add(element.toRowData())
+        );
         return newsListDTO;
     }
 
@@ -216,6 +258,8 @@ public class NewsService {
                 return newsRepository.findAllByOrderByFiftiesViewsDesc();
             case "sixties":
                 return newsRepository.findAllByOrderBySixtiesViewsDesc();
+            case "seventies":
+                return newsRepository.findAllByOrderBySeventiesViewsDesc();
             default:
                 throw new IllegalArgumentException("Invalid age group: " + ageGroup);
         }
