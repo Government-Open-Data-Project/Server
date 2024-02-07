@@ -2,12 +2,15 @@ package com.springboot.government_data_project.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.springboot.government_data_project.domain.News;
+import com.springboot.government_data_project.dto.AgeGroup;
 import com.springboot.government_data_project.dto.news.NaverResponseDTO;
 import com.springboot.government_data_project.dto.news.NewsListDTO;
 import com.springboot.government_data_project.dto.news.NewsResponseDTO;
+import com.springboot.government_data_project.service.MemberService;
 import com.springboot.government_data_project.service.NaverSearchService;
 import com.springboot.government_data_project.service.NewsService;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,6 +18,7 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/api")
@@ -24,6 +28,9 @@ public class NewsController
 
     @Autowired
     private NaverSearchService naverSearchService;
+
+    @Autowired
+    private MemberService memberService;
     private static final String DATE_PATTERN = "^\\d{4}-\\d{2}-\\d{2}$";
 
     public NewsController(NewsService newsService){
@@ -153,20 +160,30 @@ public class NewsController
         }
     }
 
+    @GetMapping("/news/increaseViews")
+    public void setIncreaseViews(@RequestParam String url, Principal principal){
+        String userId = principal.getName();
+        int age = memberService.getMemberAgeByUserId(userId); //나이 가져오기
+        String ageGroup = determineAgeGroup(age);
+        newsService.increaseNewsViews(ageGroup, url);
+    }
+
+
+
     // 나이를 바탕으로 연령대 그룹을 결정하는 메서드
     private String determineAgeGroup(int age) {
         if (age >= 20 && age <= 29) {
-            return "twenties";
+            return AgeGroup.TWENTIES.toString();
         } else if (age >= 30 && age <= 39) {
-            return "thirties";
+            return AgeGroup.THIRTIES.toString();
         } else if (age >= 40 && age <= 49) {
-            return "forties";
+            return AgeGroup.FORTIES.toString();
         } else if (age >= 50 && age <= 59) {
-            return "fifties";
+            return AgeGroup.FIFTIES.toString();
         } else if (age >= 60 && age <= 69) {
-            return "sixties";
+            return AgeGroup.SIXTIES.toString();
         } else if( age >= 70){
-            return "seventies";
+            return AgeGroup.SEVENTIES.toString();
         }
         else {
             throw new IllegalArgumentException("Invalid age: " + age);
