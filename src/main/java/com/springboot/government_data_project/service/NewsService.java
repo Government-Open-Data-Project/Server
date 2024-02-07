@@ -9,6 +9,8 @@ import com.springboot.government_data_project.dto.news.NewsResponseDTO;
 import com.springboot.government_data_project.dto.news.RowDTO;
 import com.springboot.government_data_project.repository.NewsRepository;
 import java.util.List;
+
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 
 
 @Service
+@Transactional
 @Slf4j
 public class NewsService {
     private final WebClient webClient;
@@ -53,6 +56,34 @@ public class NewsService {
         if(isNewsExists(rowDTO.getLinkUrl()) == false){
             News news = new News(rowDTO.getCompMainTitle(),rowDTO.getRegDate(), rowDTO.getCompContent(), rowDTO.getLinkUrl());
             newsRepository.save(news);
+        }
+    }
+
+    /**
+     * url의 조회수중 ageGroup에 맞는조회수 증가
+     * @param ageGroup
+     * @param url
+     */
+    public void increaseNewsViews(String ageGroup , String url){
+        switch (ageGroup) {
+            case  "twenties" :
+                newsRepository.incrementTwentiesViewByUrl(url);
+                break;
+            case "thirties" :
+                newsRepository.incrementThirtiesViewByUrl(url);
+                break;
+            case "forties" :
+                newsRepository.incrementFortiesViewByUrl(url);
+                break;
+            case "fifties" :
+                newsRepository.incrementFiftiesViewByUrl(url);
+                break;
+            case "sixties" :
+                newsRepository.incrementSixtiesViewByUrl(url);
+                break;
+            case "seventies" :
+                newsRepository.incrementSeventiesViewByUrl(url);
+                break;
         }
     }
 
