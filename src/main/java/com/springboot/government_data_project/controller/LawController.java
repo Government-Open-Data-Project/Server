@@ -164,7 +164,7 @@ public class LawController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(lawList);
     }
-
+ 
     @GetMapping("/community")
     public ResponseEntity<List<CommunityLawResponseDTO>> getCommunityLawData(Principal principal) {
         String userId = principal.getName(); // 현재 로그인한 사용자의 ID
